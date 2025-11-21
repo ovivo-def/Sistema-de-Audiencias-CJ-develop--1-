@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="9b1498ec-63ca-420f-91db-ffc05acb2ce2" name="DesarrolloCJE" url="http://172.31.76.223">
+        <fileTransfer rootFolder="/sgg" accessType="SFTP" host="172.31.76.139" port="22" sshConfigId="d07e82c1-0662-4420-b8fb-c1c9bc203c23" sshConfig="administrator@172.31.76.139:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="3bf6b8a4-2832-40ac-ae44-6d4dd7f5b680" name="nuevo">
+        <fileTransfer rootFolder="/sgg" accessType="SFTP" host="172.31.76.135" port="22" sshConfigId="cd930621-3e39-4e92-bd9d-c4ce55d1c178" sshConfig="administrator@172.31.76.135:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="41a9a313-45dd-497e-8f09-4007e787cdc1" name="nuevo2">
+        <fileTransfer rootFolder="/sgg" accessType="SFTP" host="172.31.76.133" port="22" sshConfigId="3695a2b0-fcac-40b5-80d2-383660eb7468" sshConfig="administrator@172.31.76.133:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

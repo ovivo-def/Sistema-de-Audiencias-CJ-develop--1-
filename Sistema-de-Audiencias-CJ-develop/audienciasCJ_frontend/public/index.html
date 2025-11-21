@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reproducción de Audiencias CJE</title>
+    <style>
+        body {
+            background: url("/imagenes/fondo gris.jpg");
+            background-size: cover;
+        }
+        .container {
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 450px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #eadfdf;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-heading {
+            text-align: center;
+            color: #000000;
+            margin-bottom: 20px;
+        }
+
+        .login-form {
+            text-align: center;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #000000;
+            box-sizing: border-box;
+        }
+
+        .login-form input[type="button"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #691C32;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .login-form input[type="button"]:hover {
+            background-color: #898B8E;
+        }
+
+        /* Estilo para el mensaje de error */
+        .error-message {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #d9534f;
+            background-color: #f2dede;
+            color: #d9534f;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="login-container">
+        <h2 class="login-heading">Iniciar Sesión</h2>
+        <form class="login-form">
+            <input id="svd_usr" name="svd_usr" type="text" tabindex="1" class="clearform" placeholder="Usuario">
+            <br>
+            <input id="svd_pss" name="svd_pss" type="password" tabindex="2" class="clearform" placeholder="Contraseña">
+            <br>
+            <input id="boton_login" type="button" class="boton_login" value="Iniciar Sesión">
+            <div id="error-message" class="error-message"></div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+
+<script>
+
+    // Aplicar máscara usando Inputmask
+    Inputmask({
+        mask: 'aaaa-999999-aaa',
+        definitions: {
+            'a': { validator: '[A-Za-z0-9]', cardinality: 1 },
+            '9': { validator: '[0-9]', cardinality: 1 }
+        },
+        showMaskOnHover: false,    // No mostrar la máscara al pasar el ratón
+        showMaskOnFocus: false,    // No mostrar la máscara al hacer clic en el campo
+        placeholder: ''            // Sin marcador de posición
+    }).mask('#svd_usr');
+
+    // Función para manejar el inicio de sesión
+    function loginUser() {
+
+        
+        const svd_usr = document.getElementById('svd_usr').value;
+        const svd_pss = document.getElementById('svd_pss').value;
+        const errorMessage = document.getElementById('error-message');
+
+        if (!svd_usr || !svd_pss) {
+            errorMessage.textContent = 'Por favor, introduzca usuario y contraseña.';
+            errorMessage.style.display = 'block';
+            return;
+        }
+
+        fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ svd_usr, svd_pss })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valor == 1) {
+                    window.location.href = '/audiencias.html';
+                }
+                else{
+                    console.log(data.valor);
+                    errorMessage.textContent = data.descripcion;
+                    errorMessage.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorMessage.textContent = 'Credenciales no válidas, intente de nuevo';
+                errorMessage.style.display = 'block';
+            });
+    }
+
+    // Manejar el evento Enter en los campos de entrada
+    document.getElementById('svd_usr').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            loginUser();
+        }
+    });
+
+    document.getElementById('svd_pss').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            loginUser();
+        }
+    });
+
+    // Manejar el clic en el botón de inicio de sesión
+    document.getElementById('boton_login').addEventListener('click', function() {
+        loginUser();
+    });
+</script>
+</body>
+</html>

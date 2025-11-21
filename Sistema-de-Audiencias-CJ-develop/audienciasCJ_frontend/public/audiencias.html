@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Reproducción de Audiencias</title>
+    <link rel="stylesheet" href="/styles/style.css" />
+  </head>
+  <body>
+    <!-- Modal de error (overlay) -->
+    <div
+      id="errorModal"
+      class="error-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="errorModalMessage"
+    >
+      <div class="error-modal-backdrop" tabindex="-1"></div>
+      <div class="error-modal-content" role="document">
+        <p id="errorModalMessage" class="error-text" aria-live="polite"></p>
+        <div class="error-actions">
+          <button id="errorModalCloseButton" class="btn btn-secondary">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <main class="container" id="mainContainer">
+      <header class="topbar">
+        <div class="logo-and-title">
+          <img
+            id="logo"
+            src="/imagenes/logo-consejeria-v.png"
+            alt="Logo"
+            onerror="this.style.display='none'"
+          />
+          <div class="title-container">
+            <h1 class="title">Sistema de Reproducción de Audiencias</h1>
+          </div>
+        </div>
+
+        <div class="controls">
+          <label for="searchQuery" class="visually-hidden"></label
+          >
+          <input
+            id="searchQuery"
+            class="search-input"
+            type="search"
+            placeholder="Buscar por año y correlativo..."
+            aria-label="Buscar por causa penal"
+          />
+          <div class="controls-row">
+            <button
+              id="searchButton"
+              class="btn btn-primary"
+              onclick="realizarBusqueda()"
+            >
+              Buscar
+            </button>
+            <button id="btnLimpiar" class="btn limpiar">Limpiar</button>
+
+
+            </button>
+          </div>
+        </div>
+        
+      </header>
+
+      <div id="feedback" class="feedback" aria-live="polite">Cargando...</div>
+      <div id="error-message" class="error-message" role="status"></div>
+      <div id="breadcrumb" class="breadcrumb"></div>
+
+      <section id="resultados" class="resultados" aria-live="polite">
+        <!-- Aquí el servidor inyecta la tabla/HTML; el JS reescribe con los resultados simplificados -->
+      </section>
+
+      <!-- Popup de cargando + spinner -->
+      <div
+        id="popupCargando"
+        class="popup-cargando hidden"
+        aria-hidden="true"
+        aria-live="polite"
+      >
+        <div class="cargando-card">
+          <div class="spinner" role="status" aria-hidden="true"></div>
+          <div class="cargando-text">Procesando...</div>
+        </div>
+      </div>
+
+      <!-- Barra de progreso -->
+      <div
+        id="barraCargaContainer"
+        class="barra-carga-container hidden"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+        <div class="barra-fondo">
+          <div id="barraCarga" class="barra-carga"></div>
+        </div>
+      </div>
+    </main>
+    <!-- Modal para reproducción de video -->
+<div id="videoModal" class="modal">
+  <div class="modal-content">
+    <span id="closeModal" class="close">&times;</span>
+
+    <video id="modalVideoPlayer" controls>
+      <source id="modalVideoSource" src="" type="video/mp4">
+      Tu navegador no soporta la reproducción de video.
+    </video>
+  </div>
+</div>
+
+    <script src="/scripts/script.js"></script>
+  </body>
+</html>
