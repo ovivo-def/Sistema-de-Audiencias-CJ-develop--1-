@@ -136,7 +136,8 @@ function mostrarSoloNombresNumeros(container) {
       contador++;
     });
   } else {
-    nuevaTabla = container.innerHTML;
+    document.getElementById("resultados").innerHTML =
+    '<p class="error">No se encontraron resultados.</p>';
   }
 
   container.innerHTML = nuevaTabla;
