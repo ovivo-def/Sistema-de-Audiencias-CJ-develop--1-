@@ -42,7 +42,7 @@ const fileController = {
 
     verArchivo: async (req, res) => {
         const relativeFilePath = req.query.path;
-        const fileUrl = `http://172.31.76.215/V%3A/${relativeFilePath}`;
+        const fileUrl = `http://172.31.76.215:8081/V%3A/${relativeFilePath}`;
 
         try {
             res.json({ path: fileUrl });
