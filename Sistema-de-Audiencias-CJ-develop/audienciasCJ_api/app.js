@@ -5,7 +5,7 @@ const session = require('express-session');
 const md5 = require('md5');
 
 const PORT = 3000;
-const IP = 'localhost';
+const IP = '172.31.76.215';
 
 const authRoutes = require('./routes/authRoutes');
 const fileRoutes = require('./routes/fileRoutes');

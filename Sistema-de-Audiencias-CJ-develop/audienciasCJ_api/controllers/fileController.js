@@ -3,7 +3,7 @@ const axios = require('axios');
 const fileController = {
     buscar: async (req, res) => {
         const query = req.query.query;
-        const everythingUrl = `http://localhost:8081/?s=${encodeURIComponent(query)}`;
+        const everythingUrl = `http://172.31.76.215:8081/?s=${encodeURIComponent(query)}`;
 
         try {
             const response = await axios.get(everythingUrl);
@@ -15,7 +15,7 @@ const fileController = {
     },
     buscarFiltroFecha: async (req, res) => {
         const query = req.query.query;
-        const everythingUrl = `http://localhost:8081/?s=${encodeURIComponent(query)}&sort=date modified&ascending=1`;
+        const everythingUrl = `http://172.31.76.215:8081/?s=${encodeURIComponent(query)}&sort=date modified&ascending=1`;
 
         try {
             const response = await axios.get(everythingUrl);
@@ -28,7 +28,7 @@ const fileController = {
 
     contenidoCarpeta: async (req, res) => {
         const path = req.query.path;
-        const everythingUrl = `http://localhost:8081/V%3A/`.concat(path.toString());
+        const everythingUrl = `http://172.31.76.215:8081/V%3A/`.concat(path.toString());
         console.log(everythingUrl);
         try {
             const response = await axios.get(everythingUrl);
@@ -42,7 +42,7 @@ const fileController = {
 
     verArchivo: async (req, res) => {
         const relativeFilePath = req.query.path;
-        const fileUrl = `http://localhost:8081/V%3A/${relativeFilePath}`;
+        const fileUrl = `http://172.31.76.215/V%3A/${relativeFilePath}`;
 
         try {
             res.json({ path: fileUrl });

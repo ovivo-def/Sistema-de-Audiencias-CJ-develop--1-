@@ -51,7 +51,7 @@ function cargarContenido(ruta) {
   mostrarPopupCargando();
 
   fetch(
-    `http://localhost:3000/api/files/contenido-carpeta?path=${encodeURIComponent(
+    `http://172.31.76.215:3000/api/files/contenido-carpeta?path=${encodeURIComponent(
       rutaActual
     )}`
   )
@@ -76,7 +76,7 @@ function realizarBusqueda() {
   const query = document.getElementById("searchQuery").value;
   mostrarPopupCargando();
   fetch(
-    `http://localhost:3000/api/files/buscar?query=${encodeURIComponent(query)}`
+    `http://172.31.76.215:3000/api/files/buscar?query=${encodeURIComponent(query)}`
   )
     .then((response) => response.text())
     .then((html) => {
@@ -175,7 +175,7 @@ function verArchivo(path) {
   ocultarBarraCarga();
   mostrarBarraCarga();
 
-  fetch(`http://localhost:3000/api/files/ver-archivo?path=${rutaLimpia}`)
+  fetch(`http://172.31.76.215:3000/api/files/ver-archivo?path=${rutaLimpia}`)
     .then((response) => response.json())
     .then((data) => {
       if (data.path?.endsWith(".mp4")) {

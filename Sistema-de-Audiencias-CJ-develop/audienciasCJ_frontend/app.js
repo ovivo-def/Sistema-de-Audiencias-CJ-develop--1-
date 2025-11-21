@@ -4,7 +4,7 @@ const https = require('https');
 const fs = require('fs');
 const app = express();
 const PORT = 3001;
-const IP = 'localhost'; // Esta es la dirección IP de tu máquina virtual
+const IP = '172.31.76.215'; // Esta es la dirección IP de tu máquina virtual
 
 app.use(cors());
 // Sirviendo archivos estáticos desde 'public'
