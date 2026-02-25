@@ -85,7 +85,7 @@ function realizarBusqueda() {
       mostrarSoloNombresNumeros(resultados);
 
       /** No hay ruta actual en búsquedas */
-      renderBreadcrumb("");
+      renderBreadcrumb(query);
     })
     .catch((error) => {
       console.error("Error al realizar la búsqueda:", error);
@@ -117,8 +117,9 @@ function mostrarSoloNombresNumeros(container) {
       const nombre = enlace ? enlace.textContent.trim() : td.textContent.trim();
 
       let pathCompleto = enlace?.getAttribute("href") || nombre;
+      console.log("pathCompleto al mostrar: ",pathCompleto);
       pathCompleto = limpiarRuta(pathCompleto);
-
+      console.log("pathCompleto al limpiar: ",pathCompleto);
       nuevaTabla += `
         <div class="result-item">
           <div class="icon">${icono}</div>
@@ -145,6 +146,7 @@ function mostrarSoloNombresNumeros(container) {
 
 /* Helpers */
 function escapeForOnclick(s) {
+  console.log("Funcion escapeForOnClick");
   return s.replace(/'/g, "\\'").replace(/"/g, '\\"');
 }
 
