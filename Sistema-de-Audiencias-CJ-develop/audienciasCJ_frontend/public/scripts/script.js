@@ -103,7 +103,7 @@ function mostrarSoloNombresNumeros(container) {
   if (filas.length > 0) {
     let contador = 0;
     filas.forEach((tr) => {
-      if (contador >= 10) return;
+      if (contador >= 100) return;
       const fecha = tr.querySelector("td.modifieddata").innerText;
       const td = tr.querySelector("td.file, td.folder");
 
