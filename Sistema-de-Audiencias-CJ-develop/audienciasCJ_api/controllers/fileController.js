@@ -3,8 +3,8 @@ const axios = require('axios');
 const fileController = {
     buscar: async (req, res) => {
         const query = req.query.query;
-        const everythingUrl = `http://172.31.76.215:8081/?s=${encodeURIComponent(query)}&sort=date modified&ascending=0`;
-
+        const everythingUrl = `http://172.31.76.215:8081/?s=${encodeURIComponent(query)}`;
+        //&json=1&date_modified_column=1&path_column=1
         try {
             const response = await axios.get(everythingUrl);
             res.send(response.data);

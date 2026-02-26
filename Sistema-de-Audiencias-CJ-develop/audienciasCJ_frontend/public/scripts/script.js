@@ -1,3 +1,4 @@
+
 /* script.js - Mejoras visuales sin cambiar comportamiento del backend */
 let rutaActual = "";
 
@@ -103,7 +104,7 @@ function mostrarSoloNombresNumeros(container) {
   if (filas.length > 0) {
     let contador = 0;
     filas.forEach((tr) => {
-      if (contador >= 100) return;
+      if (contador >= 30) return;
       const fecha = tr.querySelector("td.modifieddata").innerText;
       const td = tr.querySelector("td.file, td.folder");
 
@@ -334,4 +335,28 @@ function openVideoModal(rutaVideo) {
   videoPlayer.play(); // Reproduce automáticamente
 
   modal.style.display = "block";
+}
+
+function convertirFiletimeAFecha(filetimeString) {
+  const filetime = BigInt(filetimeString);
+
+  // Diferencia entre 1601-01-01 y 1970-01-01 en intervalos de 100ns
+  const EPOCH_DIFFERENCE = 116444736000000000n;
+
+  const milliseconds = (filetime - EPOCH_DIFFERENCE) / 10000n;
+
+  return new Date(Number(milliseconds));
+}
+
+function formatearFechaTijuana(fecha) {
+  return fecha.toLocaleString("es-MX", {
+    timeZone: "America/Tijuana",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  });
 }
