@@ -3,7 +3,7 @@ const axios = require('axios');
 const fileController = {
     buscar: async (req, res) => {
         const query = req.query.query;
-        const everythingUrl = `http://172.31.76.215:8081/?s=${encodeURIComponent(query)}`;
+        const everythingUrl = `http://172.31.76.215:8081/?s=${encodeURIComponent(query)}&json=1&date_modified_column=1&path_column=1`;
         //&json=1&date_modified_column=1&path_column=1
         try {
             const response = await axios.get(everythingUrl);
@@ -28,7 +28,7 @@ const fileController = {
 
     contenidoCarpeta: async (req, res) => {
         const path = req.query.path;
-        const everythingUrl = `http://172.31.76.215:8081/V%3A/`.concat(path.toString());
+        const everythingUrl = `http://172.31.76.215:8081/V%3A/`.concat(path.toString())+"/?json=1date_modified_column=1&path_column=1";
         console.log(everythingUrl);
         try {
             const response = await axios.get(everythingUrl);

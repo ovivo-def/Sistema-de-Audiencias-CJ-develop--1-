@@ -1,7 +1,8 @@
 
 /* script.js - Mejoras visuales sin cambiar comportamiento del backend */
 let rutaActual = "";
-
+let rutaActualGlobal = "";
+let modoBusqueda = false;
 /* Normalizador para evitar rutas corruptas */
 function limpiarRuta(path) {
   return path
@@ -46,52 +47,48 @@ function cerrarVentanaError() {
 /* ---------------------------
    FUNCIÓN NECESARIA PARA BREADCRUMB
 -----------------------------*/
-function cargarContenido(ruta) {
-  rutaActual = limpiarRuta(ruta || "");
+function cargarContenido(ruta = "") {
+
+  modoBusqueda = false;
+  rutaActualGlobal = ruta;
 
   mostrarPopupCargando();
 
-  fetch(
-    `http://172.31.76.215:3000/api/files/contenido-carpeta?path=${encodeURIComponent(
-      rutaActual
-    )}`
-  )
-    .then((r) => r.text())
-    .then((html) => {
-      const cont = document.getElementById("resultados");
-      cont.innerHTML = html;
-      mostrarSoloNombresNumeros(cont);
+  const url = ruta
+    ? `http://172.31.76.215:3000/api/files/contenido-carpeta?path=${encodeURIComponent(ruta)}`
+    : `http://172.31.76.215:3000/api/files/contenido-carpeta`;
 
-      /** ← ACTUALIZA BREADCRUMB CADA VEZ QUE CAMBIA LA RUTA */
-      renderBreadcrumb(rutaActual);
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      renderizarDataTable(data.results);
     })
-    .catch((err) => {
-      console.error("Error cargando carpeta:", err);
-      mostrarVentanaError("No se pudo cargar la carpeta.");
+    .catch(error => {
+      console.error("Error:", error);
+      mostrarVentanaError("Error al cargar contenido.");
     })
     .finally(() => cerrarPopupCargando());
 }
 
 /* Búsqueda */
 function realizarBusqueda() {
-  const query = document.getElementById("searchQuery").value;
-  mostrarPopupCargando();
-  fetch(
-    `http://172.31.76.215:3000/api/files/buscar?query=${encodeURIComponent(query)}`
-  )
-    .then((response) => response.text())
-    .then((html) => {
-      const resultados = document.getElementById("resultados");
-      resultados.innerHTML = html;
-      mostrarSoloNombresNumeros(resultados);
 
-      /** No hay ruta actual en búsquedas */
-      renderBreadcrumb(query);
+  const query = document.getElementById("searchQuery").value;
+  if (!query.trim()) return;
+
+  modoBusqueda = true;
+
+  mostrarPopupCargando();
+
+  fetch(`http://172.31.76.215:3000/api/files/buscar?query=${encodeURIComponent(query)}`)
+    .then(response => response.json())
+    .then(data => {
+      renderizarDataTable(data.results);
+      renderBreadcrumb(`Resultados para: ${query}`);
     })
-    .catch((error) => {
-      console.error("Error al realizar la búsqueda:", error);
-      document.getElementById("resultados").innerHTML =
-        '<p class="error">Hubo un error al realizar la búsqueda.</p>';
+    .catch(error => {
+      console.error("Error en búsqueda:", error);
+      mostrarVentanaError("Error en búsqueda.");
     })
     .finally(() => cerrarPopupCargando());
 }
@@ -280,12 +277,13 @@ function renderBreadcrumb(rutaActual) {
 
   if (ruta === "") {
     breadcrumbDiv.innerHTML = `<span class="active">Inicio</span>`;
+    realizarBusqueda();
     return;
   }
 
   const partes = ruta.split("/");
   let rutaAcumulada = "";
-  let html = `<span data-path="" class="breadcrumb-item">Inicio</span> / `;
+  let html = `<span data-path="" class="breadcrumb-item" >Inicio</span> / `;
 
   partes.forEach((parte, index) => {
     rutaAcumulada += index === 0 ? parte : "/" + parte;
@@ -303,6 +301,20 @@ function renderBreadcrumb(rutaActual) {
   document.querySelectorAll(".breadcrumb-item").forEach((item) => {
     item.addEventListener("click", () => {
       const ruta = item.getAttribute("data-path");
+      const query = document.getElementById("searchQuery").value.trim();
+  
+      // Si es Inicio (data-path vacío)
+      if (!ruta || ruta === "") {
+  
+        if (query !== "") {
+          realizarBusqueda();
+          return;
+        }
+  
+        cargarContenido("");
+        return;
+      }
+  
       cargarContenido(ruta);
     });
   });
@@ -359,4 +371,112 @@ function formatearFechaTijuana(fecha) {
     second: "2-digit",
     hour12: true
   });
+}
+
+function normalizarRuta(ruta) {
+  if (!ruta) return "";
+
+  return ruta
+    .replace(/\\/g, "/")   // convierte \ en /
+    .replace(/^\/+/, "")   // elimina slash inicial
+    .replace(/\/+/g, "/"); // elimina dobles //
+}
+
+function renderizarDataTable(results) {
+
+  const contenedor = document.getElementById("resultados");
+
+  contenedor.innerHTML = `
+    <table id="tablaArchivos" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Nombre</th>
+          <th>Fecha modificación</th>
+        </tr>
+      </thead>
+    </table>
+  `;
+
+  const filas = results.map(item => {
+
+    const esCarpeta = item.type === "folder";
+    const icono = esCarpeta ? "📁" : "🎞️";
+
+    let nuevaRuta;
+
+    if (modoBusqueda) {
+    
+      // Normalizamos lo que viene del backend
+      const rutaBackend = normalizarRuta(item.path);
+    
+      nuevaRuta = rutaBackend
+        ? rutaBackend + "/" + item.name
+        : item.name;
+    
+    } else {
+    
+      nuevaRuta = rutaActualGlobal
+        ? rutaActualGlobal + "/" + item.name
+        : item.name;
+    }
+    
+    nuevaRuta = normalizarRuta(nuevaRuta);
+
+    let fechaFormateada = "";
+    let timestamp = 0;
+    
+    if (item.date_modified) {
+      const fecha = convertirFiletimeAFecha(item.date_modified);
+      fechaFormateada = formatearFechaTijuana(fecha);
+      timestamp = fecha.getTime();
+    }
+
+    return {
+      tipo: icono,
+      nombre: `<a href="#" class="link-navegacion" data-path="${nuevaRuta}">
+                 ${item.name}
+               </a>`,
+      fecha: {
+        display: fechaFormateada,
+        timestamp: timestamp
+      }
+    };
+  });
+
+  $('#tablaArchivos').DataTable({
+    destroy: true,
+    data: filas,
+    columns: [
+      { data: 'tipo' },
+      { data: 'nombre' },
+      {
+        data: 'fecha',
+        render: function (data, type, row) {
+      
+          if (type === 'display') {
+            return data.display;
+          }
+      
+          // Para sort, type y filter devolvemos timestamp
+          return data.timestamp;
+        }
+      }
+    ],
+    pageLength: 15,
+    order: [[2, "desc"]],
+    language: {
+      url: "https://cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
+    }
+  });
+
+  $('#tablaArchivos tbody').on('click', 'a.link-navegacion', function (e) {
+    e.preventDefault();
+    const path = this.getAttribute("data-path");
+    handleClick(path);
+  });
+
+  if (!modoBusqueda) {
+    renderBreadcrumb(rutaActualGlobal);
+  }
 }
